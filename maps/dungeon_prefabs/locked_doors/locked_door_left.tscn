@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://tiled/walls.tres" type="TileSet" id=1]
+[ext_resource path="res://objects/locked_door.tscn" type="PackedScene" id=2]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="locked_door" parent="." instance=ExtResource( 2 )]
+position = Vector2( 40, 360 )
+
+[node name="door_down" type="TileMap" parent="."]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+format = 1

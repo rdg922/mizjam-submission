@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://enemies/wizard.tscn" type="PackedScene" id=1]
+[ext_resource path="res://enemies/snake.tscn" type="PackedScene" id=2]
+[ext_resource path="res://tiled/walls.tres" type="TileSet" id=3]
+
+[node name="4_wizards" type="Node2D"]
+
+[node name="wizard" parent="." instance=ExtResource( 1 )]
+position = Vector2( 400, 320 )
+
+[node name="wizard2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 800, 480 )
+
+[node name="wizard3" parent="." instance=ExtResource( 2 )]
+position = Vector2( 400, 480 )
+
+[node name="wizard4" parent="." instance=ExtResource( 2 )]
+position = Vector2( 800, 320 )
+
+[node name="TileMap" type="TileMap" parent="."]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 196614, 0, 0, 196615, 1, 0, 196616, 2, 0, 262150, 3, 0, 262151, 8, 0, 262152, 4, 0, 327686, 7, 0, 327687, 6, 0, 327688, 5, 0 )

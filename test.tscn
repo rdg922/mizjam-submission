@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://tiled/new_tileset.tres" type="TileSet" id=2]
+[ext_resource path="res://projectile/projectile.tscn" type="PackedScene" id=3]
+[ext_resource path="res://objects/key.tscn" type="PackedScene" id=4]
+[ext_resource path="res://enemies/wizard.tscn" type="PackedScene" id=5]
+[ext_resource path="res://objects/locked_door.tscn" type="PackedScene" id=6]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	var player = load(\"res://player/player.tscn\").instance()
+	add_child(player)
+	player.position = Vector2(1280/2, 720/2)
+
+	var cam := Camera2D.new()
+	cam.set_script(load(\"res://objects/camera.gd\"))
+	cam.target = player
+	cam.name = \"camera\"
+	add_child(cam)
+	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+"
+
+[node name="Node2D" type="Node2D"]
+script = SubResource( 1 )
+
+[node name="TileMap" type="TileMap" parent="."]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( -65540, 0, 0, -65539, 0, 2, -4, 0, 131072, -3, 0, 131074, -65533, 0, 0, -65532, 0, 2, 3, 0, 131072, 4, 0, 131074, 196598, 0, 0, 196599, 0, 1, 196600, 0, 1, 196601, 0, 1, 196602, 0, 2, 262134, 0, 65536, 262135, 0, 65537, 262136, 0, 65537, 262137, 0, 65537, 262138, 0, 65538, 327670, 0, 131072, 327671, 0, 131073, 327672, 0, 131073, 327673, 0, 131073, 327674, 0, 131074 )
+
+[node name="Projectile" parent="." instance=ExtResource( 3 )]
+position = Vector2( 425.295, 129.397 )
+
+[node name="Node2D" parent="." instance=ExtResource( 4 )]
+position = Vector2( 691.47, 342.492 )
+
+[node name="locked_door" parent="." instance=ExtResource( 6 )]
+position = Vector2( 196.847, 333.98 )
+
+[node name="wizard" parent="." instance=ExtResource( 5 )]
+position = Vector2( 1001.31, 176.003 )

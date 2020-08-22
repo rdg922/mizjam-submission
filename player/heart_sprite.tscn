@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://hearts.png" type="Texture" id=1]
+
+[node name="Sprite" type="Sprite"]
+scale = Vector2( 5, 5 )
+texture = ExtResource( 1 )
+centered = false
+hframes = 2
+frame = 1

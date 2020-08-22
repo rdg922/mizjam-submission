@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://projectile/projectile_spawner.tscn" type="PackedScene" id=1]
+[ext_resource path="res://tiled/walls.tres" type="TileSet" id=2]
+[ext_resource path="res://enemies/bat.tscn" type="PackedScene" id=3]
+[ext_resource path="res://enemies/wizard.tscn" type="PackedScene" id=4]
+[ext_resource path="res://objects/key.tscn" type="PackedScene" id=5]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="key_puzzle" type="TileMap" parent="."]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 196612, 8, 0, 196619, 8, 0, 262148, 8, 0, 262155, 8, 0, 327684, 8, 0, 327691, 8, 0 )
+
+[node name="StaticBody2D2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 920, 520 )
+direction = 1
+
+[node name="StaticBody2D3" parent="." instance=ExtResource( 1 )]
+position = Vector2( 920, 200 )
+direction = 1
+
+[node name="StaticBody2D4" parent="." instance=ExtResource( 1 )]
+position = Vector2( 360, 520 )
+direction = 0
+
+[node name="StaticBody2D5" parent="." instance=ExtResource( 1 )]
+position = Vector2( 360, 200 )
+direction = 0
+
+[node name="bat" parent="." instance=ExtResource( 3 )]
+position = Vector2( 840, 440 )
+
+[node name="bat2" parent="." instance=ExtResource( 3 )]
+position = Vector2( 840, 280 )
+
+[node name="Node2D" parent="." instance=ExtResource( 5 )]
+position = Vector2( 640, 358.956 )
+
+[node name="wizard" parent="." instance=ExtResource( 4 )]
+position = Vector2( 440, 360 )

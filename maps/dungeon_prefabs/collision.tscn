@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://tiled/walls.tres" type="TileSet" id=1]
+
+[node name="Collision" type="TileMap"]
+visible = false
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 16
+collision_mask = 16
+format = 1
+tile_data = PoolIntArray( 7, 8, 0, 8, 8, 0, 262144, 8, 0, 262159, 8, 0, 524295, 8, 0, 524296, 8, 0 )

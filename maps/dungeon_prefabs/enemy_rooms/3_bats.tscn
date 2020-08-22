@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://enemies/bat.tscn" type="PackedScene" id=1]
+
+[node name="3_ducks" type="Node2D"]
+
+[node name="bat" parent="." instance=ExtResource( 1 )]
+position = Vector2( 243.519, 277.499 )
+
+[node name="bat2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 543.671, 436.07 )
+
+[node name="bat3" parent="." instance=ExtResource( 1 )]
+position = Vector2( 843.823, 300.152 )

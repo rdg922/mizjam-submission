@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://tiled/flooring.tres" type="TileSet" id=1]
+
+[node name="TileMap" type="TileMap"]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 65537, 1, 0, 65547, 0, 0, 131074, 2, 0, 196613, 1, 0, 196619, 1, 0, 262151, 0, 0, 327685, 1, 0, 393220, 1, 0, 393225, 2, 0, 393230, 0, 0, 458765, 0, 0, 458766, 1, 0 )
