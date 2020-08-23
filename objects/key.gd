@@ -26,7 +26,7 @@ func open():
 	if len(get_overlapping_bodies()) > 0:
 		for body in get_overlapping_bodies():
 			if body.is_in_group("wall"):
-				body.queue_free()
+				body.get_parent().queue_free()
 				var player = get_parent().get_parent()
 				player.have_key = false
 				player.inventory.get_children().erase(self)
@@ -39,6 +39,7 @@ func open():
 				queue_free()
 				
 				
+
 
 func use_item(player):
 	$AnimationPlayer.play("use")

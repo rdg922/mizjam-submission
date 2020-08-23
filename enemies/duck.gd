@@ -4,7 +4,7 @@ extends Enemy
 var projectile = load("res://projectile/projectile.tscn")
 
 func _init():
-	health = 5
+	health = 4
 	attack_range = 150
 
 func state_machine(delta):

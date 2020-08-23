@@ -1,7 +1,6 @@
 extends Weapon
 
 
-class_name Sword
 
 onready var anim = $AnimationPlayer
 
@@ -12,13 +11,16 @@ var is_collected = false;
 func _init():
 	knockback = 2000;
 
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	cooldown = 10000 # Cooldown happens at end of animation player
 	$Sprite.frame_coords.y = color
 	if get_parent().get_parent().get_class() == "Player":
 		is_collected = true
-
+	else:
+		connect("body_entered", self, "_on_Sword_body_entered")
 
 
 var player
@@ -39,6 +41,18 @@ func attack():
 			var direction = (body.global_position - get_parent().global_position).normalized()
 			body.hit(damage, direction, knockback)
 			
+		if body.is_in_group("dungeon_lock") and body.get_node("Sprite").frame_coords.y == $Sprite.frame_coords.y:
+			body.get_node("AnimationPlayer").play("delete")
+		
+
+func knockback():
+	for body in get_overlapping_bodies():
+		if body.get_class() == "Enemy":
+			var direction = (body.global_position - get_parent().global_position).normalized()
+			body.hit(damage, direction, 1)
+			
+		if body.is_in_group("dungeon_lock") and body.get_node("Sprite").frame_coords.y == $Sprite.frame_coords.y:
+			body.get_node("AnimationPlayer").play("delete")	
 
 
 func _on_Sword_body_entered(body):
@@ -46,4 +60,6 @@ func _on_Sword_body_entered(body):
 		is_collected = true
 		get_parent().call_deferred("remove_child", self)
 		body.inventory.call_deferred("add_child", self)
-	pass # Replace with function body.
+		position = Vector2(13, 0)
+		rotation = 0
+		hide()

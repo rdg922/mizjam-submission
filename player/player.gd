@@ -46,6 +46,15 @@ var THE_FINAL_STRAW = 5;
 
 func _process(delta):
 #	print(state)
+
+	if (Input.is_action_pressed("test")):
+		set_collision_layer_bit(0, false)
+		set_collision_mask_bit(0, false)
+	else:
+		set_collision_layer_bit(0, true)
+		set_collision_mask_bit(0, true)
+	
+
 	if !( state == STATES.WALK or state == STATES.HIT or state == STATES.MID_ATTACK or state == STATES.INVULNERABLE):
 		return
 	
@@ -71,6 +80,13 @@ func _process(delta):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	
+	if Input.is_action_pressed("test"):
+		set_collision_layer_bit(0, false)
+		set_collision_mask_bit(0, false)
+	else:
+		set_collision_layer_bit(0, true)
+		set_collision_mask_bit(0, true)
 	
 #	print(invulnerablitiy_timer)
 	
@@ -192,7 +208,7 @@ func set_invulnerable():
 	invulnerablitiy_timer = INVULNERABLILITY_RESET
 	
 	state = STATES.INVULNERABLE
-	if health <= 0:
+	if health == 0:
 		var instance = load("res://player/death.tscn").instance()
 		get_parent().add_child(instance)
 		instance.global_position = global_position
@@ -209,7 +225,7 @@ func state_hit(delta):
 	
 
 func use_item():
-	weapons[current_weapon_index].use_item(self)
+	inventory.get_child(current_weapon_index).use_item(self)
 	pass
 
 

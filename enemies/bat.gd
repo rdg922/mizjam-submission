@@ -7,12 +7,12 @@ var projectile = load("res://projectile/projectile.tscn")
 
 func _init():
 	attack_range = 900
-	health = 3;
+	health = 2;
 	
 func attack():
 	.attack()
 #	for direction in Directions.DIRECTIONS.values():
-	var direction = Directions.DIRECTIONS.values()[int(rand_range(0, 4))]
+	var direction = get_direction_to_player()
 	var p =  projectile.instance()
 	p.direction = direction
 	p.position = position + Directions.direction_to_vector[direction] * 5

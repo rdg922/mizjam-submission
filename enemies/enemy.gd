@@ -27,12 +27,19 @@ var ROAM_DISTANCE = 500
 
 var attack_range = 70
 
+onready var default_position = global_position
+
 func get_class():
 	return "Enemy"
 
 # Check if in screen
 func _process(delta):
-	set_physics_process(Globals.camera.get_grid_pos(global_position) == Globals.camera.get_grid_pos(Globals.camera.global_position))
+	var new_state = Globals.camera.get_grid_pos(global_position) == Globals.camera.get_grid_pos(Globals.camera.global_position)
+	
+	if is_physics_processing() != new_state:
+		global_position = default_position
+		set_physics_process(new_state)
+	
 		
 	
 func _physics_process(delta):
@@ -114,7 +121,10 @@ func player_exists():
 	var wr = weakref(target)
 	# freed
 	
-	return target != null and wr.get_ref()
+	var foo = target != null and wr.get_ref()
+	if !foo:
+		state = STATES.IDLE
+	return foo
 
 func loop_hit():
 	
@@ -132,6 +142,7 @@ func die():
 	get_parent().add_child(ghost)
 	ghost.global_position = global_position
 	ghost.get_node("sprite").frame_coords.y = sprite.frame_coords.y
+	Globals.enemies_killed += 1
 	queue_free()
 	
 func hit(damage, direction, knockback):

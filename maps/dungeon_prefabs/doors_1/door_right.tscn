@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://tiled/wall.tres" type="TileSet" id=1]
+
+[node name="door_up" type="TileMap"]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 65551, 16, 0, 131087, 16, 0, 196623, 15, 0, 327695, 9, 0, 393231, 16, 0, 458767, 16, 0 )

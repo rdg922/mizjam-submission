@@ -10,7 +10,7 @@ extends Sprite
 func _ready():
 	$AnimationPlayer.play("startup")
 	
-	if randf() > .75:
+	if Globals.enemies_killed % 3 == 0:
 		var inst = load("res://objects/potion.tscn").instance()
 		get_parent().call_deferred("add_child", inst)
 		inst.position = position + Vector2(0, 16)

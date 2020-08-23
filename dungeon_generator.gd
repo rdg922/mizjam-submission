@@ -14,10 +14,10 @@ extends Node2D
 # Clean Code
 # Add support for locks and keys once implemented
 
-export(int) var generator_seed = 5
-
 enum SEGMENTS {START, LOCK, KEY, DUNGEON_ITEM, DUNGEON_LOCK, MINIBOSS, BOSS_KEY, BOSS_DOOR, REWARD, COMBAT, TRAVERSAL, PUZZLE, ENTRANCE}
 enum DIRECTIONS {LEFT, RIGHT, UP, DOWN}
+
+var color = Directions.DIRECTIONS.values()[int(rand_range(0, 4))];
 
 const WIDTH = 1280;
 const HEIGHT = 720;
@@ -25,37 +25,88 @@ const HEIGHT = 720;
 # These prefabs are scenes with a tilemap of room parts used later 
 var PREFABS = {
 	# These are for walls and doors, there is no variety
-	DOOR_UP = preload("res://maps/dungeon_prefabs/doors/door_up.tscn"),
-	DOOR_DOWN = preload("res://maps/dungeon_prefabs/doors/door_down.tscn"),	
-	DOOR_LEFT = preload("res://maps/dungeon_prefabs/doors/door_left.tscn"),
-	DOOR_RIGHT = preload("res://maps/dungeon_prefabs/doors/door_right.tscn"),
+	DOOR_UP = [preload("res://maps/dungeon_prefabs/doors_0/door_up.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_1/door_up.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_2/door_up.tscn")
+				],
+	DOOR_DOWN= [preload("res://maps/dungeon_prefabs/doors_0/door_down.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_1/door_down.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_2/door_down.tscn")
+				],
+	DOOR_RIGHT = [preload("res://maps/dungeon_prefabs/doors_0/door_right.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_1/door_right.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_2/door_right.tscn")
+				],
+	DOOR_LEFT= [preload("res://maps/dungeon_prefabs/doors_0/door_left.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_1/door_left.tscn"),
+			preload("res://maps/dungeon_prefabs/doors_2/door_left.tscn")
+				],
 
-	WALL_DOWN = preload("res://maps/dungeon_prefabs/walls/wall_down.tscn"),
-	WALL_UP = preload("res://maps/dungeon_prefabs/walls/wall_up.tscn"),	
-	WALL_LEFT = preload("res://maps/dungeon_prefabs/walls/wall_left.tscn"),
-	WALL_RIGHT = preload("res://maps/dungeon_prefabs/walls/wall_right.tscn"),
+	WALL_DOWN = [preload("res://maps/dungeon_prefabs/walls_0/wall_down.tscn"),
+				preload("res://maps/dungeon_prefabs/walls_1/wall_down.tscn"),
+				preload("res://maps/dungeon_prefabs/walls_2/wall_down.tscn")
+				],
+	WALL_UP = [preload("res://maps/dungeon_prefabs/walls_0/wall_up.tscn"),
+				preload("res://maps/dungeon_prefabs/walls_1/wall_up.tscn"),
+				preload("res://maps/dungeon_prefabs/walls_2/wall_up.tscn")
+				],
+	WALL_LEFT = [preload("res://maps/dungeon_prefabs/walls_0/wall_left.tscn"),
+				preload("res://maps/dungeon_prefabs/walls_1/wall_left.tscn"),
+				preload("res://maps/dungeon_prefabs/walls_2/wall_left.tscn")
+				],
+	WALL_RIGHT = [preload("res://maps/dungeon_prefabs/walls_0/wall_right.tscn"),
+			preload("res://maps/dungeon_prefabs/walls_1/wall_right.tscn"),
+			preload("res://maps/dungeon_prefabs/walls_2/wall_right.tscn")
+			],
 
 	LOCK_UP = preload("res://maps/dungeon_prefabs/locked_doors/locked_door_up.tscn"),
 	LOCK_DOWN = preload("res://maps/dungeon_prefabs/locked_doors/locked_door_down.tscn"),
 	LOCK_LEFT = preload("res://maps/dungeon_prefabs/locked_doors/locked_door_left.tscn"),
 	LOCK_RIGHT = preload("res://maps/dungeon_prefabs/locked_doors/locked_door_right.tscn"),
 
+	BOSS_UP = preload("res://maps/dungeon_prefabs/boss_doors/boss_door_up.tscn"),
+	BOSS_DOWN = preload("res://maps/dungeon_prefabs/boss_doors/boss_door_down.tscn"),
+	BOSS_LEFT = preload("res://maps/dungeon_prefabs/boss_doors/boss_door_left.tscn"),
+	BOSS_RIGHT = preload("res://maps/dungeon_prefabs/boss_doors/boss_door_right.tscn"),
+	
+	DUNGEON_UP = preload("res://maps/dungeon_prefabs/dungeon_lock/dungeon_door_up.tscn"),
+	DUNGEON_DOWN = preload("res://maps/dungeon_prefabs/dungeon_lock/dungeon_door_down.tscn"),
+	DUNGEON_LEFT = preload("res://maps/dungeon_prefabs/dungeon_lock/dungeon_door_left.tscn"),
+	DUNGEON_RIGHT = preload("res://maps/dungeon_prefabs/dungeon_lock/dungeon_door_right.tscn"),
 	# These are for different type of rooms (combat, puzzle), and therefore have variety
 	ROOMS = {
 		START = [],
-		COMBAT = [preload("res://maps//dungeon_prefabs/enemy_rooms/3_ducks.tscn"),
+		COMBAT = [
+				
+				[preload("res://maps//dungeon_prefabs/enemy_rooms/3_ducks.tscn"),
 				preload("res://maps/dungeon_prefabs/enemy_rooms/3_bats_walls.tscn"),
 				preload("res://maps//dungeon_prefabs/enemy_rooms/3_bats.tscn"),
 				preload("res://maps/dungeon_prefabs/enemy_rooms/4_snakes.tscn"),
 				preload("res://maps//dungeon_prefabs/enemy_rooms/4_wizards.tscn"),
-				preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_wizards.tscn")],
+				preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_wizards_2.tscn"),
+				preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_skeletons.tscn")],
+				
+				
+				[],
+				
+				[]
+				
+				],
 				
 		KEY = [preload("res://maps/dungeon_prefabs/keys/key_1.tscn"),
 			preload("res://maps/dungeon_prefabs/keys/key_2.tscn"),
 			preload("res://maps/dungeon_prefabs/keys/key_3.tscn"),
-			preload("res://maps/dungeon_prefabs/keys/key_4.tscn")],
+			preload("res://maps/dungeon_prefabs/keys/key_4.tscn"),
+			preload("res://maps/dungeon_prefabs/keys/key_5.tscn")],
 		
-#
+		BOSS_KEY = [preload("res://maps/dungeon_prefabs/boss_key/boss_key.tscn")],
+		
+		DUNGEON_ITEM = [preload("res://maps/dungeon_prefabs/dungeon_item/axe.tscn"),
+						preload("res://maps/dungeon_prefabs/dungeon_item/knife.tscn"),
+						preload("res://maps/dungeon_prefabs/dungeon_item/spear.tscn")],
+		
+		BOSSES = [preload("res://maps/dungeon_prefabs/boss_rooms/dave_and_duck.tscn")],
+		
 #		COMBAT = [preload("res://maps//dungeon_prefabs/enemy_rooms/4_wizards.tscn")]
 		DEFAULT = [preload("res://maps/dungeon_prefabs/collision.tscn")],
 		FLOORS = [preload("res://maps/dungeon_prefabs/flooring/floor_1.tscn"),
@@ -64,7 +115,11 @@ var PREFABS = {
 				preload("res://maps/dungeon_prefabs/flooring/floor_4.tscn"),
 				preload("res://maps/dungeon_prefabs/flooring/floor_empty.tscn"),
 				preload("res://maps/dungeon_prefabs/flooring/floor_empty.tscn")]
-	}
+	},
+
+	TILESET = [preload("res://tiled/wall-1.png"), 
+			preload("res://tiled/wall-2.png"),
+			preload("res://tiled/wall-3.png")]
 
 }
 
@@ -72,7 +127,7 @@ var entrance = null
 
 func _ready():
 	
-	seed(generator_seed)
+	seed(Globals.SEED)
 	var dungeon = create_dungeon()
 	entrance = dungeon
 	
@@ -86,11 +141,6 @@ func _ready():
 	cam.name = "camera"
 	add_child(cam)
 	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
-	
-	
-	var duck = load("res://enemies/duck.tscn").instance()
-	add_child(duck)
-	duck.position = Vector2(WIDTH/2, HEIGHT/2 - 280)
 
 	add_child(load("res://player/health.tscn").instance())
 
@@ -237,26 +287,6 @@ func setup_room_layout(current: Room, taken_rooms: Dictionary, starting_position
 		var door_position;
 		var room_position = Vector2()
 		
-	
-#		var exit = get_parent().get_node("a")
-#		var exit_shape : CollisionShape2D = get_parent().get_node("a/CollisionShape2D")
-#		match(door_direction):
-#			DIRECTIONS.UP:
-#				door_position = Vector2(WIDTH/2, -HEIGHT - 8)
-#				room_position = Vector2(0, -HEIGHT)
-#				exit_shape.scale.x = 4
-#			DIRECTIONS.DOWN:
-#				door_position = Vector2(WIDTH/2, HEIGHT + 8)
-#				room_position = Vector2(0, HEIGHT)
-#				exit_shape.scale.x = 4
-#			DIRECTIONS.LEFT:
-#				door_position = Vector2(-WIDTH - 8, HEIGHT)
-#				room_position = Vector2(-WIDTH, 0)
-#				exit_shape.scale.y = 4
-#			DIRECTIONS.RIGHT:
-#				door_position = Vector2(WIDTH + 8, HEIGHT)
-#				room_position = Vector2(WIDTH, 0)
-#				exit_shape.scale.y = 4
 
 		taken_rooms[room_position] = 0 # Used so that the value is not null, and therefore cannot be valid spot for another room
 #		taken_rooms[Vector2(0,0)]._connected_to[door_direction] = true
@@ -348,55 +378,91 @@ func add_room_to_scene(room : Room):
 	
 	# Used for dungeon walls / doors / locked doors (locked doors to be implemented)
 	if(room._connected_to[DIRECTIONS.UP]):
-		var wall = PREFABS.DOOR_UP.instance()
+		var wall = PREFABS.DOOR_UP[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
+		
 		if room._connected_to[DIRECTIONS.UP]._type == SEGMENTS.LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.UP]):
 			var lock = PREFABS.LOCK_UP.instance()
 			lock.position = pos
 			add_child(lock)
+		if room._connected_to[DIRECTIONS.UP]._type == SEGMENTS.BOSS_DOOR and room._child_rooms.has(room._connected_to[DIRECTIONS.UP]):
+			var lock = PREFABS.BOSS_UP.instance()
+			lock.position = pos
+			add_child(lock)
+		if room._connected_to[DIRECTIONS.UP]._type == SEGMENTS.DUNGEON_LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.UP]):
+			var lock = PREFABS.DUNGEON_UP.instance()
+			lock.position = pos
+			add_child(lock)
+			lock.get_child(1).get_node("Sprite").frame_coords.y = color
 	else:
-		var wall = PREFABS.WALL_UP.instance()
+		var wall = PREFABS.WALL_UP[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
 
 	if(room._connected_to[DIRECTIONS.DOWN]):
-		var wall = PREFABS.DOOR_DOWN.instance()
+		var wall = PREFABS.DOOR_DOWN[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
 		if room._connected_to[DIRECTIONS.DOWN]._type == SEGMENTS.LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.DOWN]):
 			var lock = PREFABS.LOCK_DOWN.instance()
 			lock.position = pos
 			add_child(lock)
+		if room._connected_to[DIRECTIONS.DOWN]._type == SEGMENTS.BOSS_DOOR and room._child_rooms.has(room._connected_to[DIRECTIONS.DOWN]):
+			var lock = PREFABS.BOSS_DOWN.instance()
+			lock.position = pos
+			add_child(lock)
+		if room._connected_to[DIRECTIONS.DOWN]._type == SEGMENTS.DUNGEON_LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.DOWN]):
+			var lock = PREFABS.DUNGEON_DOWN.instance()
+			lock.position = pos
+			add_child(lock)
+			lock.get_child(1).get_node("Sprite").frame_coords.y = color
 	else:
-		var wall = PREFABS.WALL_DOWN.instance()
+		var wall = PREFABS.WALL_DOWN[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
 
 	if(room._connected_to[DIRECTIONS.LEFT]):
-		var wall = PREFABS.DOOR_LEFT.instance()
+		var wall = PREFABS.DOOR_LEFT[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
 		if room._connected_to[DIRECTIONS.LEFT]._type == SEGMENTS.LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.LEFT]):
 			var lock = PREFABS.LOCK_LEFT.instance()
 			lock.position = pos
 			add_child(lock)
+		if room._connected_to[DIRECTIONS.LEFT]._type == SEGMENTS.BOSS_DOOR and room._child_rooms.has(room._connected_to[DIRECTIONS.LEFT]):
+			var lock = PREFABS.BOSS_LEFT.instance()
+			lock.position = pos
+			add_child(lock)
+		if room._connected_to[DIRECTIONS.LEFT]._type == SEGMENTS.DUNGEON_LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.LEFT]):
+			var lock = PREFABS.DUNGEON_LEFT.instance()
+			lock.position = pos
+			add_child(lock)
+			lock.get_child(1).get_node("Sprite").frame_coords.y = color
 	else:
-		var wall = PREFABS.WALL_LEFT.instance()
+		var wall = PREFABS.WALL_LEFT[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
 
 	if(room._connected_to[DIRECTIONS.RIGHT]):
-		var wall = PREFABS.DOOR_RIGHT.instance()
+		var wall = PREFABS.DOOR_RIGHT[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
 		if room._connected_to[DIRECTIONS.RIGHT]._type == SEGMENTS.LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.RIGHT]):
 			var lock = PREFABS.LOCK_RIGHT.instance()
 			lock.position = pos
 			add_child(lock)
-			
+		if room._connected_to[DIRECTIONS.RIGHT]._type == SEGMENTS.BOSS_DOOR and room._child_rooms.has(room._connected_to[DIRECTIONS.RIGHT]):
+			var lock = PREFABS.BOSS_RIGHT.instance()
+			lock.position = pos
+			add_child(lock)
+		if room._connected_to[DIRECTIONS.RIGHT]._type == SEGMENTS.DUNGEON_LOCK and room._child_rooms.has(room._connected_to[DIRECTIONS.RIGHT]):
+			var lock = PREFABS.DUNGEON_RIGHT.instance()
+			lock.position = pos
+			add_child(lock)
+			lock.get_child(1).get_node("Sprite").frame_coords.y = color
 	else:
-		var wall = PREFABS.WALL_RIGHT.instance()
+		var wall = PREFABS.WALL_RIGHT[Globals.theme].instance()
 		add_child(wall)
 		wall.position = pos
 		
@@ -415,12 +481,25 @@ func add_room_to_scene(room : Room):
 # Just returns a random item in an array
 	
 	match(room._type):
-		SEGMENTS.COMBAT:
-			var segment = choose(PREFABS.ROOMS.COMBAT).instance()
+		SEGMENTS.COMBAT, SEGMENTS.LOCK, SEGMENTS.DUNGEON_LOCK:
+			var segment = choose(PREFABS.ROOMS.COMBAT[Globals.theme]).instance()
 			segment.position = pos
 			add_child(segment)
 		SEGMENTS.KEY:
 			var segment = choose(PREFABS.ROOMS.KEY).instance()
+			segment.position = pos
+			add_child(segment)
+		SEGMENTS.BOSS_KEY:
+			var segment = choose(PREFABS.ROOMS.BOSS_KEY).instance()
+			segment.position = pos
+			add_child(segment)
+		SEGMENTS.DUNGEON_ITEM:
+			var segment = choose(PREFABS.ROOMS.DUNGEON_ITEM).instance()
+			segment.position = pos
+			add_child(segment)
+			segment.get_child(0).get_node("Sprite").frame_coords.y = color
+		SEGMENTS.BOSS_DOOR:
+			var segment = choose_boss().instance()
 			segment.position = pos
 			add_child(segment)
 	
@@ -435,6 +514,13 @@ func choose(options: Array, print_choice: bool = false):
 	if(print_choice): print(value)
 	return options[value]
 
+func choose_boss():
+	
+	var choice = choose(PREFABS.ROOMS.BOSSES)
+	while (Globals.bosses_done.has(choice)):
+		choice = choose(PREFABS.ROOMS.BOSSES)
+	return choice
+	
 
 func generate_segments() -> Segment:
 	var options = []
@@ -539,47 +625,21 @@ func generate_segments() -> Segment:
 		# Segment with boss door
 		lock().add_to_end([
 			regular_segment().add_to_end(
-				two_extra_keys()
+				key()
 			),
-			lock().add_to_end(lock().add_to_end(
-				boss_door()
-			))
+			lock().add_to_end([
+				lock().add_to_end(
+					boss_door()
+				)
+			])
 		]),
 		# Segment with Dungeon Item
 		lock().add_to_end([
 			lock().add_to_end([
 				dungeon_item(),
-				key(),
 				key()
-			])
-		])
-	]))
-	# Slightly less backtracking
-	options.append(Segment.new().add_segments([
-		# Dungeon lock to boss key
-		key().add_to_end([
-			dungeon_lock().add_to_end(
-				regular_segment().add_to_end(
-					boss_key()
-				)
-			)
-		]),
-		# Segment with boss door
-		lock().add_to_end([
-			regular_segment().add_to_end(
-				two_extra_keys()
-			),
-			lock().add_to_end(lock().add_to_end(
-				boss_door()
-			)),
-			# Segment with Dungeon Item
-			lock().add_to_end([
-				lock().add_to_end([
-					dungeon_item(),
-					key(),
-					key()
-				])
 			]),
+			key()
 		])
 	]))
 	
@@ -597,19 +657,19 @@ func generate_segments() -> Segment:
 		# Segment with boss door
 		lock().add_to_end([
 			regular_segment().add_to_end(
-				two_extra_keys()
+				key()
 			),
-			lock().add_to_end(lock().add_to_end(
+			lock().add_to_end(
 				boss_door()
-			))
+			)
 		]),
 		# Segment with Dungeon Item
 		lock().add_to_end([
 			lock().add_to_end([
 				dungeon_item(),
-				key(),
 				key()
-			])
+			]),
+			key()
 		]),
 	]))
 	# Slightly less backtracking
@@ -627,18 +687,20 @@ func generate_segments() -> Segment:
 			regular_segment().add_to_end(
 				two_extra_keys()
 			),
-			lock().add_to_end(
-				lock().add_to_end(
-					boss_door()
-				)
-			),
+			lock().add_to_end([
+				lock().add_to_end([
+					boss_door(),
+					key()
+				]),
+				key()
+			]),
 			# Segment with Dungeon Item
 			lock().add_to_end([
 				lock().add_to_end([
 					dungeon_item(),
 					key(),
-					key()
-				])
+				]),
+				key()
 			]),
 		])
 	]))	
@@ -714,7 +776,7 @@ func key_and_lock() -> Segment:
 	options.append(
 		regular_segment().set_start().add_segments([
 			key(),
-			regular_segment().add_to_end(lock())
+			regular_segment().add_to_end(lock().set_end())
 		])
 	)
 	
@@ -723,11 +785,11 @@ func key_and_lock() -> Segment:
 func boss_key() -> Segment:
 	var options = []
 	options.append(Segment.new(SEGMENTS.BOSS_KEY).set_start().set_end())
-	options.append(
-		regular_segment().set_start().add_to_end([
-			regular_segment().add_to_end(two_extra_keys()),
-			lock().add_to_end(lock().add_to_end(Segment.new(SEGMENTS.BOSS_KEY).set_end()))
-		]))
+#	options.append(
+#		regular_segment().set_start().add_to_end([
+#			regular_segment().add_to_end(two_extra_keys()),
+#			lock().add_to_end(lock().add_to_end(Segment.new(SEGMENTS.BOSS_KEY).set_end()))
+#		]))
 	options.append(regular_segment().set_start().add_to_end(Segment.new(SEGMENTS.BOSS_KEY).set_end()))
 	return choose(options)
 
@@ -767,16 +829,26 @@ func dungeon_lock() -> Segment:
 func dungeon_item() -> Segment:
 	var options = []
 	options.append(Segment.new(SEGMENTS.DUNGEON_ITEM).set_start().set_end())
-	options.append(regular_segment().set_start().add_to_end([
-		regular_segment().add_to_end(key()),
-		regular_segment().add_to_end(lock()),
-		Segment.new(SEGMENTS.DUNGEON_ITEM).set_end()
+	options.append(
+		regular_segment().set_start().add_to_end([
+			regular_segment().add_to_end(
+				key()
+			),
+			regular_segment().add_to_end(
+				lock().add_to_end(
+					Segment.new(SEGMENTS.DUNGEON_ITEM).set_end()
+				)
+			)
 	]))
 	options.append(regular_segment().set_start().add_to_end([
-		regular_segment().add_to_end(key()),
-		regular_segment().add_to_end(lock()),
+		regular_segment(),
 		regular_segment().add_to_end(Segment.new(SEGMENTS.DUNGEON_ITEM).set_end())
 	]))
+	
+	options.append(regular_segment().set_start().add_to_end(
+		Segment.new(SEGMENTS.DUNGEON_ITEM).set_end()
+	))
+	
 	return choose(options)
 
 func regular_segment() -> Segment:

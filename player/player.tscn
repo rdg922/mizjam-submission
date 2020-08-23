@@ -1,10 +1,8 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/player.png" type="Texture" id=2]
 [ext_resource path="res://swords/sword.tscn" type="PackedScene" id=3]
-[ext_resource path="res://swords/knife.tscn" type="PackedScene" id=4]
-[ext_resource path="res://swords/spear.tscn" type="PackedScene" id=5]
 
 [sub_resource type="Animation" id=1]
 resource_name = "idle"
@@ -45,14 +43,7 @@ anims/walk = SubResource( 2 )
 
 [node name="inventory" type="Sprite" parent="."]
 
-[node name="Sword" parent="inventory" instance=ExtResource( 3 )]
-position = Vector2( 76, 0 )
-
-[node name="Sword2" parent="inventory" instance=ExtResource( 4 )]
-visible = false
-
-[node name="Sword3" parent="inventory" instance=ExtResource( 5 )]
-visible = false
+[node name="Sword3" parent="inventory" instance=ExtResource( 3 )]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -3.2 )

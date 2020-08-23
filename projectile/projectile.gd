@@ -43,7 +43,6 @@ func _physics_process(delta):
 	
 	var in_hittable_state = !player.has_node("flash")
 	if player.current_color != direction and in_hittable_state:
-		print(player.state == player.STATES.HIT)
 		player.hit(damage, move_dir, knockback)
 		queue_free()
 	

@@ -8,7 +8,6 @@ var width = 80
 func _ready():
 	update_health(5)
 	Globals.health = self;
-	print("Yuh")
 
 func update_health(value: float):
 	# Delete all children
