@@ -21,6 +21,7 @@ func _on_Node2D_body_entered(body):
 		self.show()
 		collected = true
 		body.have_key = true
+		$AudioStreamPlayer2D.play()
 
 func open():
 	if len(get_overlapping_bodies()) > 0:
@@ -43,6 +44,8 @@ func open():
 
 func use_item(player):
 	$AnimationPlayer.play("use")
+#	$AudioStreamPlayer2D.stream = load("res://sfx/doorClose_1.ogg")
+#	$AudioStreamPlayer2D.play()
 	pass
 
 func alt_use_item(player):
@@ -52,7 +55,7 @@ func alt_use_item(player):
 	new_pos = get_parent().get_parent().global_position
 	get_parent().call_deferred("remove_child", self)
 	get_tree().get_root().call_deferred("add_child", self)
-
+	
 
 
 func _on_Node2D_tree_entered():

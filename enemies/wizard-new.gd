@@ -1,7 +1,7 @@
 extends Enemy
 
 var projectile = load("res://projectile/projectile.tscn")
-
+#
 func _init():
 	SPEED = 300
 	health = 4.5

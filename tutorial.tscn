@@ -1,0 +1,109 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://m5x7.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Button.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 64
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 48
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 64
+font_data = ExtResource( 1 )
+
+[node name="Tutorial" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.497664
+anchor_right = 0.5
+anchor_bottom = 0.497664
+margin_left = -134.0
+margin_top = -313.5
+margin_right = 134.0
+margin_bottom = -262.5
+custom_fonts/font = SubResource( 1 )
+text = "Instructions:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -558.0
+margin_top = -211.0
+margin_right = 601.0
+margin_bottom = -160.0
+custom_fonts/font = SubResource( 2 )
+text = "*wasd to move, left and right click to use item"
+align = 1
+
+[node name="Label3" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -514.0
+margin_top = -123.0
+margin_right = 519.0
+margin_bottom = 38.0
+custom_fonts/font = SubResource( 2 )
+text = "Match Color with Projectiles by moving in the correct direction before getting hit."
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label4" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -648.0
+margin_top = 11.0
+margin_right = 643.0
+margin_bottom = 90.0
+custom_fonts/font = SubResource( 2 )
+text = "TIP: Move diagonally while still being in a certain color by first pressing direction and then holding an adjacent key "
+align = 1
+autowrap = true
+
+[node name="Label6" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -491.0
+margin_top = 136.0
+margin_right = 501.0
+margin_bottom = 403.0
+custom_fonts/font = SubResource( 2 )
+text = "Weapons go through walls!"
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="."]
+margin_left = 425.494
+margin_top = 591.991
+margin_right = 857.494
+margin_bottom = 648.991
+custom_fonts/font = SubResource( 3 )
+text = "Back to Title Screen"
+script = ExtResource( 2 )
+[connection signal="button_up" from="Button" to="Button" method="_on_Button_button_up"]

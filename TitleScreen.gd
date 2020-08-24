@@ -8,6 +8,7 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+#	randomize()
 	$TextEdit.text = "Enter Seed Here:"
 
 func _on_TextEdit_focus_entered():
@@ -23,3 +24,9 @@ func _on_Button_button_up():
 		Globals.SEED = (hash($TextEdit.text))
 	
 	get_tree().call_deferred("change_scene", ("res://maps/dungeon_generator.tscn"))
+	queue_free()
+
+
+func _on_Button2_button_up():
+	get_tree().change_scene("res://tutorial.tscn")
+	pass # Replace with function body.

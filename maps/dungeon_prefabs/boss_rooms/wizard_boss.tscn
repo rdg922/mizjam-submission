@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://projectile/projectile_spawner.tscn" type="PackedScene" id=1]
+[ext_resource path="res://tiled/wall.tres" type="TileSet" id=2]
+[ext_resource path="res://enemies/bosses/wizard-boss.tscn" type="PackedScene" id=3]
+[ext_resource path="res://maps/dungeon_prefabs/boss_rooms/trigger_stairs.gd" type="Script" id=4]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="key_puzzle" type="TileMap" parent="."]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+format = 1
+
+[node name="StaticBody2D2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 840, 680 )
+direction = 2
+
+[node name="StaticBody2D4" parent="." instance=ExtResource( 1 )]
+position = Vector2( 440, 40 )
+
+[node name="wizard_boss" parent="." instance=ExtResource( 3 )]
+position = Vector2( 1000, 360 )
+
+[node name="wizard_boss2" parent="." instance=ExtResource( 3 )]
+position = Vector2( 200, 360 )

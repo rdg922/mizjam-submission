@@ -44,8 +44,26 @@ var have_key = false;
 var the_final_straw = 5;
 var THE_FINAL_STRAW = 5;
 
+var is_moving = .05;
+
+func _ready():
+	print(Globals.weapons)
+	if Globals.weapons != null:
+		get_node("inventory").queue_free()
+		inventory = (Globals.weapons)
+		add_child(inventory)
+		inventory.name = "inventory"
+	Globals.player = self
 func _process(delta):
 #	print(state)
+
+	if !$AudioStreamPlayer2D.playing and get_input() != Vector2.ZERO:
+		$AudioStreamPlayer2D.play()
+		is_moving = .05
+	if  get_input() == Vector2.ZERO:
+		is_moving -= delta
+		if is_moving < 0:
+			$AudioStreamPlayer2D.playing = false
 
 	if (Input.is_action_pressed("test")):
 		set_collision_layer_bit(0, false)
@@ -209,11 +227,14 @@ func set_invulnerable():
 	
 	state = STATES.INVULNERABLE
 	if health == 0:
-		var instance = load("res://player/death.tscn").instance()
-		get_parent().add_child(instance)
-		instance.global_position = global_position
-		instance.timer = 10
-		queue_free()
+		die()
+
+func die():
+	var instance = load("res://player/death.tscn").instance()
+	get_parent().add_child(instance)
+	instance.global_position = global_position
+	instance.timer = 10
+	queue_free()
 
 func state_hit(delta):
 	hit_timer -= delta
@@ -245,9 +266,10 @@ func loop_weapon_color():
 	return
 
 func loop_can_attack():
-	if(Input.is_action_pressed("M1")):
+	if(Input.is_action_just_pressed("M1")):
 		use_item()
-
+		$AudioStreamPlayer2D2.play()
+	
 func loop_can_switch_weapons():
 	if(Input.is_action_just_pressed("M2") and !have_key):
 		current_weapon_index += 1

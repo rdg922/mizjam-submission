@@ -29,11 +29,17 @@ var attack_range = 70
 
 onready var default_position = global_position
 
+var is_active_reset = .1;
+var is_active;
+
 func get_class():
 	return "Enemy"
 
+
 # Check if in screen
 func _process(delta):
+	
+
 	var new_state = Globals.camera.get_grid_pos(global_position) == Globals.camera.get_grid_pos(Globals.camera.global_position)
 	
 	if is_physics_processing() != new_state:
@@ -152,6 +158,7 @@ func hit(damage, direction, knockback):
 	health -= damage
 	anim.play("hit")
 	Globals.camera.shake(.2, 30, 15)
+	$AudioStreamPlayer2D.play()
 
 func attack():
 	pass

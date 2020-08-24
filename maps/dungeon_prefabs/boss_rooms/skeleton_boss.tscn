@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://objects/potion.tscn" type="PackedScene" id=1]
+[ext_resource path="res://tiled/wall.tres" type="TileSet" id=2]
+[ext_resource path="res://enemies/bosses/skeleton_boss.tscn" type="PackedScene" id=3]
+[ext_resource path="res://maps/dungeon_prefabs/boss_rooms/trigger_stairs.gd" type="Script" id=4]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="key_puzzle" type="TileMap" parent="."]
+scale = Vector2( 5, 5 )
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+format = 1
+
+[node name="Key" parent="." instance=ExtResource( 1 )]
+position = Vector2( 120, 120 )
+
+[node name="Key2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 120, 520 )
+
+[node name="Key3" parent="." instance=ExtResource( 1 )]
+position = Vector2( 1080, 520 )
+
+[node name="Key4" parent="." instance=ExtResource( 1 )]
+position = Vector2( 1080, 120 )
+
+[node name="wizard" parent="." instance=ExtResource( 3 )]
+position = Vector2( 440, 280 )

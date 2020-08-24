@@ -4,8 +4,11 @@ extends Enemy
 var projectile = load("res://projectile/projectile.tscn")
 
 func _init():
-	health = 50
+	health = 25
 	attack_range = 300
+
+func _ready():
+	get_parent().boss_count += 1
 
 func state_machine(delta):
 	match(state):
@@ -31,3 +34,6 @@ func loop_attack():
 	.loop_attack()
 	move_to(target.position)
 
+func queue_free():
+	get_parent().boss_count -= 1
+	.queue_free()

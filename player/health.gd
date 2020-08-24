@@ -26,4 +26,6 @@ func update_health(value: float):
 		
 	if ceiled - value == 0.5 and last:
 		last.frame = 0
-		
+	
+	if value <= 0:
+		Globals.player.die()

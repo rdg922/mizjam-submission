@@ -14,6 +14,8 @@ extends Node2D
 # Clean Code
 # Add support for locks and keys once implemented
 
+var weapon_queued_for_deletion;
+
 enum SEGMENTS {START, LOCK, KEY, DUNGEON_ITEM, DUNGEON_LOCK, MINIBOSS, BOSS_KEY, BOSS_DOOR, REWARD, COMBAT, TRAVERSAL, PUZZLE, ENTRANCE}
 enum DIRECTIONS {LEFT, RIGHT, UP, DOWN}
 
@@ -21,6 +23,28 @@ var color = Directions.DIRECTIONS.values()[int(rand_range(0, 4))];
 
 const WIDTH = 1280;
 const HEIGHT = 720;
+
+func list_files_in_directory(path):
+	var files = []
+	var dir = Directory.new()
+	dir.open(path)
+	dir.list_dir_begin()
+
+	while true:
+		var file = dir.get_next()
+		if file == "":
+			break
+		elif not file.begins_with(".") and not file.ends_with(".import"):
+			files.append(file)
+
+	dir.list_dir_end()
+
+	return files
+
+var audio_files = list_files_in_directory("res://audio")
+
+var audio_min = 20;
+var audio_max = 75;
 
 # These prefabs are scenes with a tilemap of room parts used later 
 var PREFABS = {
@@ -78,20 +102,32 @@ var PREFABS = {
 		START = [],
 		COMBAT = [
 				
-				[preload("res://maps//dungeon_prefabs/enemy_rooms/3_ducks.tscn"),
-				preload("res://maps/dungeon_prefabs/enemy_rooms/3_bats_walls.tscn"),
-				preload("res://maps//dungeon_prefabs/enemy_rooms/3_bats.tscn"),
-				preload("res://maps/dungeon_prefabs/enemy_rooms/4_snakes.tscn"),
-				preload("res://maps//dungeon_prefabs/enemy_rooms/4_wizards.tscn"),
-				preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_wizards_2.tscn"),
-				preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_skeletons.tscn")],
+			[preload("res://maps//dungeon_prefabs/enemy_rooms/3_ducks.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/3_bats_walls.tscn"),
+			preload("res://maps//dungeon_prefabs/enemy_rooms/3_bats.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/3_bats_ducks_walls.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/3_ducks.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/walls_projectile_spawner_bats.tscn")
+			],
+			
+			
+			[preload("res://maps/dungeon_prefabs/enemy_rooms/4_snakes.tscn"),
+			preload("res://maps//dungeon_prefabs/enemy_rooms/4_wizards.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_wizards_2.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_wizards.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/walls_projectile_spawner_bats.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/snakes.tscn")
+			],
+			
+			[preload("res://maps/dungeon_prefabs/enemy_rooms/mixed_snakes_wizards_2.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/skeleton_and_wizards.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/4_skeletons.tscn"),
+			preload("res://maps//dungeon_prefabs/enemy_rooms/4_wizards.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/3_skeletons_walls.tscn"),
+			preload("res://maps/dungeon_prefabs/enemy_rooms/skeleton_walls_4.tscn"),
+			]
 				
-				
-				[],
-				
-				[]
-				
-				],
+		],
 				
 		KEY = [preload("res://maps/dungeon_prefabs/keys/key_1.tscn"),
 			preload("res://maps/dungeon_prefabs/keys/key_2.tscn"),
@@ -105,7 +141,9 @@ var PREFABS = {
 						preload("res://maps/dungeon_prefabs/dungeon_item/knife.tscn"),
 						preload("res://maps/dungeon_prefabs/dungeon_item/spear.tscn")],
 		
-		BOSSES = [preload("res://maps/dungeon_prefabs/boss_rooms/dave_and_duck.tscn")],
+		BOSSES = [preload("res://maps/dungeon_prefabs/boss_rooms/dave_and_duck.tscn"),
+				preload("res://maps/dungeon_prefabs/boss_rooms/wizard_boss.tscn"),
+				preload("res://maps/dungeon_prefabs/boss_rooms/skeleton_boss.tscn")],
 		
 #		COMBAT = [preload("res://maps//dungeon_prefabs/enemy_rooms/4_wizards.tscn")]
 		DEFAULT = [preload("res://maps/dungeon_prefabs/collision.tscn")],
@@ -125,13 +163,44 @@ var PREFABS = {
 
 var entrance = null
 
+var player;
+var audio;
 func _ready():
+	
+	PREFABS.ROOMS.COMBAT[0] += PREFABS.ROOMS.COMBAT[0]
+	PREFABS.ROOMS.COMBAT[0] += PREFABS.ROOMS.COMBAT[1]
+	
+	PREFABS.ROOMS.COMBAT[2] = [
+		PREFABS.ROOMS.COMBAT[2][0],
+		PREFABS.ROOMS.COMBAT[2][1],
+		PREFABS.ROOMS.COMBAT[2][2],
+		PREFABS.ROOMS.COMBAT[2][3],
+		PREFABS.ROOMS.COMBAT[2][4],
+		PREFABS.ROOMS.COMBAT[2][5],
+		
+		PREFABS.ROOMS.COMBAT[1][0],
+		PREFABS.ROOMS.COMBAT[1][1],
+		PREFABS.ROOMS.COMBAT[1][2],
+		PREFABS.ROOMS.COMBAT[1][3],
+		PREFABS.ROOMS.COMBAT[1][4],
+		PREFABS.ROOMS.COMBAT[1][5],
+
+		PREFABS.ROOMS.COMBAT[0][0],
+		PREFABS.ROOMS.COMBAT[0][1],
+		PREFABS.ROOMS.COMBAT[0][2],
+		PREFABS.ROOMS.COMBAT[0][3],
+		PREFABS.ROOMS.COMBAT[0][4],
+		PREFABS.ROOMS.COMBAT[0][5],
+	]
+	
+	for weapon in Globals.weapons_found:
+		PREFABS.ROOMS.DUNGEON_ITEM.erase(weapon)
 	
 	seed(Globals.SEED)
 	var dungeon = create_dungeon()
 	entrance = dungeon
 	
-	var player = load("res://player/player.tscn").instance()
+	player = load("res://player/player.tscn").instance()
 	add_child(player)
 	player.position = Vector2(WIDTH/2, HEIGHT/2)
 
@@ -143,6 +212,28 @@ func _ready():
 	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
 
 	add_child(load("res://player/health.tscn").instance())
+	
+	var timer = Timer.new()
+	timer.connect("timeout", self, "_play_music") 
+	timer.name = "Timer"
+	add_child(timer)
+	
+	audio = AudioStreamPlayer2D.new()
+	add_child(audio)
+	audio.volume_db = 40
+	audio.bus = "echo"
+	call_deferred("_play_music")
+	
+	Globals.weapons_found.append(weapon_queued_for_deletion)
+
+func _play_music():
+	
+	
+	audio.position = player.global_position + Vector2(rand_range(-WIDTH, WIDTH), rand_range(-HEIGHT, HEIGHT))
+	audio.stream = load("res://audio/" + choose(audio_files))
+	audio.play()
+	
+	$Timer.start(rand_range(audio_min, audio_max))
 
 # Creates the room ba
 func build_dungeon_from_entrance(current: Room) -> void:
@@ -467,14 +558,14 @@ func add_room_to_scene(room : Room):
 		wall.position = pos
 		
 	# Draws Labels for Room types
-	var label = Label.new()
-	label.text = SEGMENTS.keys()[room._type]
-	add_child(label)
-	label.rect_position = pos 
-	label.rect_scale = Vector2(2, 2)
-	label.rect_size = Vector2(WIDTH/2, HEIGHT/2)
-	label.valign = Label.VALIGN_CENTER
-	label.align = Label.ALIGN_CENTER
+#	var label = Label.new()
+#	label.text = SEGMENTS.keys()[room._type]
+#	add_child(label)
+#	label.rect_position = pos 
+#	label.rect_scale = Vector2(2, 2)
+#	label.rect_size = Vector2(WIDTH/2, HEIGHT/2)
+#	label.valign = Label.VALIGN_CENTER
+#	label.align = Label.ALIGN_CENTER
 #	var font = DynamicFont.new()
 #	font.font_data = load("res://ui/theme/font.ttf")
 #	label.add_font_override("font", font)
@@ -494,10 +585,13 @@ func add_room_to_scene(room : Room):
 			segment.position = pos
 			add_child(segment)
 		SEGMENTS.DUNGEON_ITEM:
-			var segment = choose(PREFABS.ROOMS.DUNGEON_ITEM).instance()
+			var choice = choose(PREFABS.ROOMS.DUNGEON_ITEM)
+			var segment = choice.instance()
+			weapon_queued_for_deletion = choice
 			segment.position = pos
 			add_child(segment)
 			segment.get_child(0).get_node("Sprite").frame_coords.y = color
+			
 		SEGMENTS.BOSS_DOOR:
 			var segment = choose_boss().instance()
 			segment.position = pos
@@ -516,9 +610,7 @@ func choose(options: Array, print_choice: bool = false):
 
 func choose_boss():
 	
-	var choice = choose(PREFABS.ROOMS.BOSSES)
-	while (Globals.bosses_done.has(choice)):
-		choice = choose(PREFABS.ROOMS.BOSSES)
+	var choice = PREFABS.ROOMS.BOSSES[Globals.theme]
 	return choice
 	
 
